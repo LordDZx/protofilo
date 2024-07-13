@@ -29,30 +29,27 @@ if ($_POST) {
     }
 
     // Set Message
-    $message .= "Email from: " . $name . "<br />";
-    $message .= "Email address: " . $email . "<br />";
-    $message .= "Message: <br />";
+    $message = "Email from: " . $name . "\n";
+    $message .= "Email address: " . $email . "\n";
+    $message .= "Message: \n";
     $message .= $contact_message;
-    $message .= "<br /> ----- <br /> This email was sent from your site's contact form. <br />";
+    $message .= "\n ----- \n This email was sent from your site's contact form. \n";
 
     // Set From: header
     $from = $name . " <" . $email . ">";
 
     // Email Headers
     $headers = "From: " . $from . "\r\n";
-    $headers .= "Reply-To: " . $email . "\r\n";
     $headers .= "MIME-Version: 1.1\r\n";
-    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
     if (!$error) {
-        ini_set("sendmail_from", $siteOwnersEmail); // for windows server
         $mail = mail($siteOwnersEmail, $subject, $message, $headers);
 
         if ($mail) {
             echo "OK";
         } else {
             echo "Something went wrong. Please try again.";
-            // Add error logging or debugging here
             error_log("Email sending failed: " . $subject . " - " . $message);
         }
     } else {
