@@ -11,37 +11,38 @@ if ($_POST) {
     $subject = trim(stripslashes($_POST['contactSubject']));
     $contact_message = trim(stripslashes($_POST['contactMessage']));
 
-    // Check Name
-    if (strlen($name) < 2) {
-        $error['name'] = "Please enter your name.";
+    $error = array();
+
+    // Validate input data
+    if (!validateName($name)) {
+        $error['name'] = "Please enter a valid name.";
     }
-    // Check Email
-    if (!preg_match('/^[a-z0-9&\'\.\-_\+]+@[a-z0-9\-]+\.([a-z0-9\-]+\.)*+[a-z]{2}/is', $email)) {
+    if (!validateEmail($email)) {
         $error['email'] = "Please enter a valid email address.";
     }
-    // Check Message
     if (strlen($contact_message) < 15) {
         $error['message'] = "Please enter your message. It should have at least 15 characters.";
     }
-    // Subject
+
+    // Set subject
     if ($subject == '') {
         $subject = "Contact Form Submission";
     }
 
-    // Set Message
-    $message = "Email from: " . $name . "\n";
-    $message .= "Email address: " . $email . "\n";
-    $message .= "Message: \n";
-    $message .= $contact_message;
-    $message .= "\n ----- \n This email was sent from your site's contact form. \n";
+    // Set message
+    $message = "Email from: ". $name. "\n";
+    $message.= "Email address: ". $email. "\n";
+    $message.= "Message: \n";
+    $message.= $contact_message;
+    $message.= "\n ----- \n This email was sent from your site's contact form. \n";
 
     // Set From: header
-    $from = $name . " <" . $email . ">";
+    $from = filter_var($email, FILTER_VALIDATE_EMAIL)? $email : $siteOwnersEmail;
 
-    // Email Headers
-    $headers = "From: " . $from . "\r\n";
-    $headers .= "MIME-Version: 1.1\r\n";
-    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    // Email headers
+    $headers = "From: ". $from. "\r\n";
+    $headers.= "MIME-Version: 1.1\r\n";
+    $headers.= "Content-Type: text/plain; charset=UTF-8\r\n";
 
     if (!$error) {
         $mail = mail($siteOwnersEmail, $subject, $message, $headers);
@@ -50,15 +51,23 @@ if ($_POST) {
             echo "OK";
         } else {
             echo "Something went wrong. Please try again.";
-            error_log("Email sending failed: " . $subject . " - " . $message);
+            error_log("Email sending failed: ". $subject. " - ". $message);
         }
     } else {
-        $response = (isset($error['name'])) ? $error['name'] . "<br /> \n" : null;
-        $response .= (isset($error['email'])) ? $error['email'] . "<br /> \n" : null;
-        $response .= (isset($error['message'])) ? $error['message'] . "<br />" : null;
-
+        $response = '';
+        foreach ($error as $err) {
+            $response.= $err. "<br />\n";
+        }
         echo $response;
     }
+}
+
+function validateName($name) {
+    return preg_match('/^[a-zA-Z ]+$/', $name);
+}
+
+function validateEmail($email) {
+    return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 
 ?>
