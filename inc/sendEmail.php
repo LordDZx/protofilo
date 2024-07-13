@@ -13,36 +13,42 @@ if ($_POST) {
 
     $error = array();
 
-    // Validate input data
-    if (!validateName($name)) {
-        $error['name'] = "Please enter a valid name.";
+    // Check Name
+    if (strlen($name) < 2) {
+        $error['name'] = "Please enter your name.";
     }
-    if (!validateEmail($email)) {
+    // Check Email
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error['email'] = "Please enter a valid email address.";
     }
+    // Check Message
     if (strlen($contact_message) < 15) {
         $error['message'] = "Please enter your message. It should have at least 15 characters.";
     }
-
-    // Set subject
+    // Subject
     if ($subject == '') {
         $subject = "Contact Form Submission";
     }
 
-    // Set message
-    $message = "Email from: ". $name. "\n";
-    $message.= "Email address: ". $email. "\n";
-    $message.= "Message: \n";
-    $message.= $contact_message;
-    $message.= "\n ----- \n This email was sent from your site's contact form. \n";
+    // Set Message
+    $message = array();
+    $message[] = "Email from: ". $name;
+    $message[] = "Email address: ". $email;
+    $message[] = "Message:";
+    $message[] = $contact_message;
+    $message[] = "-----";
+    $message[] = "This email was sent from your site's contact form.";
+    $message = implode("\n", $message);
 
     // Set From: header
-    $from = filter_var($email, FILTER_VALIDATE_EMAIL)? $email : $siteOwnersEmail;
+    $from = $email;
 
-    // Email headers
-    $headers = "From: ". $from. "\r\n";
-    $headers.= "MIME-Version: 1.1\r\n";
-    $headers.= "Content-Type: text/plain; charset=UTF-8\r\n";
+    // Email Headers
+    $headers = array();
+    $headers[] = "From: ". $from;
+    $headers[] = "MIME-Version: 1.1";
+    $headers[] = "Content-Type: text/plain; charset=UTF-8";
+    $headers = implode("\r\n", $headers);
 
     if (!$error) {
         $mail = mail($siteOwnersEmail, $subject, $message, $headers);
@@ -60,14 +66,6 @@ if ($_POST) {
         }
         echo $response;
     }
-}
-
-function validateName($name) {
-    return preg_match('/^[a-zA-Z ]+$/', $name);
-}
-
-function validateEmail($email) {
-    return filter_var($email, FILTER_VALIDATE_EMAIL);
 }
 
 ?>
