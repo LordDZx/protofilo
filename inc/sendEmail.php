@@ -40,24 +40,20 @@ if ($_POST) {
     $message[] = "This email was sent from your site's contact form.";
     $message = implode("\n", $message);
 
-    // Set From: header
-    $from = $email;
-
-    // Email Headers
-    $headers = array();
-    $headers[] = "From: ". $from;
-    $headers[] = "MIME-Version: 1.1";
-    $headers[] = "Content-Type: text/plain; charset=UTF-8";
-    $headers = implode("\r\n", $headers);
-
     if (!$error) {
-        $mail = mail($siteOwnersEmail, $subject, $message, $headers);
+        require 'PHPMailerAutoload.php';
 
-        if ($mail) {
-            echo "OK";
+        $mail = new PHPMailer;
+
+        $mail->setFrom($email, $name);
+        $mail->addAddress($siteOwnersEmail, 'Site Owner');
+        $mail->Subject = $subject;
+        $mail->Body = $message;
+
+        if (!$mail->send()) {
+            echo 'Error: '. $mail->ErrorInfo;
         } else {
-            echo "Something went wrong. Please try again.";
-            error_log("Email sending failed: ". $subject. " - ". $message);
+            echo 'OK';
         }
     } else {
         $response = '';
