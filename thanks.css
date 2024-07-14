@@ -1,0 +1,100 @@
+/* Global Styles */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: Lato, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    background-color: #f9f9f9;
+  }
+  
+  /* Header Styles */
+  
+  .site-header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .site-header__title {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* Main Content Styles */
+  
+  .main-content {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .main-content__checkmark {
+    font-size: 48px;
+    color: #4CAF50;
+    margin-bottom: 20px;
+  }
+  
+  .main-content__body {
+    font-size: 18px;
+    margin-bottom: 30px;
+  }
+  
+  /* Button Styles */
+  
+  button {
+    background-color: #ff0000;
+    border-radius: 5px;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #3e8e41;
+  }
+  
+  /* Footer Styles */
+  
+  .site-footer {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    clear: both;
+  }
+  
+  .site-footer__fineprint {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+  /* Responsive Styles */
+  
+  @media (max-width: 768px) {
+   .main-content {
+      margin: 20px auto;
+    }
+  }
+  
+  @media (max-width: 480px) {
+   .main-content {
+      margin: 10px auto;
+    }
+   .main-content__checkmark {
+      font-size: 36px;
+    }
+  }
